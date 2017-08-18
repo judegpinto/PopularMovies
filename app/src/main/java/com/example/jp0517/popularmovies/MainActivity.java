@@ -19,7 +19,7 @@ import com.example.jp0517.popularmovies.view.PosterAdapter;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final int width = 6;
+    private static final int width = 3;
     private PosterAdapter posterAdapter;
     private RecyclerView posterView;
     private String exampleUrl;
@@ -61,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            String[] movieNames = JsonTools.getMovieNames(s);
-            posterAdapter.setImages(movieNames);
+            MovieInfo[] movies = JsonTools.getMovieInfo(s);
+            posterAdapter.setMovieInfo(movies);
         }
     }
 

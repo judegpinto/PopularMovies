@@ -1,8 +1,7 @@
 package com.example.jp0517.popularmovies.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.Image;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.jp0517.popularmovies.MainActivity;
+import com.example.jp0517.popularmovies.MovieDetailActivity;
+import com.example.jp0517.popularmovies.MovieInfo;
 import com.example.jp0517.popularmovies.R;
 import com.squareup.picasso.Picasso;
 
@@ -20,19 +20,18 @@ import com.squareup.picasso.Picasso;
 
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterViewHolder> {
 
-    private String[] m_images;
+    private MovieInfo[] m_movies;
     private Context m_context;
-    private final String base = "http://image.tmdb.org/t/p/w185";
+    private final String base = "http://image.tmdb.org/t/p/w342";
 
     public PosterAdapter(Context context) {
         m_context = context;
-
     }
 
     @Override
     public int getItemCount() {
-        if(m_images==null) {return 0;}
-        return m_images.length;
+        if(m_movies==null) {return 0;}
+        return m_movies.length;
     }
 
     @Override
@@ -41,14 +40,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.movie_poster,parent,false);
-        PosterViewHolder posterViewHolder = new PosterViewHolder(view);
-        return posterViewHolder;
+        return new PosterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(PosterViewHolder holder, int position) {
         Log.d("adapter","loading image");
-        Picasso.with(m_context).load(base+m_images[position]).into(holder.imageView);
+        String imageExt = m_movies[position].getImageExt();
+        Picasso.with(m_context).load(base+imageExt).into(holder.imageView);
     }
 
     public class PosterViewHolder extends RecyclerView.ViewHolder {
@@ -61,16 +60,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String movie = m_images[getAdapterPosition()];
-
+                    Intent intent = new Intent(m_context, MovieDetailActivity.class);
+                    intent.putExtra("MOVIES",m_movies[getAdapterPosition()]);
+                    m_context.startActivity(intent);
                 }
             });
         }
-
     }
 
-    public void setImages(String[] images) {
-        m_images=images;
+    public void setMovieInfo(MovieInfo[] movies) {
+        m_movies = movies;
         notifyDataSetChanged();
     }
 }
