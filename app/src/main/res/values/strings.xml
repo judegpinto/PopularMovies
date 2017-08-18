@@ -1,3 +1,6 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
+    <string name="app_name">Popular Movies</string>
+    <string name="api_base_url">https://api.themoviedb.org/3/movie/popular</string>
+    <string name="dicover_popular">/discover/movie?sort_by=popularity.desc</string>
+    <string name="disover_vote_average">/discover/movie?sort_by=vote_average.desc</string>
 </resources>
