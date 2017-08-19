@@ -20,16 +20,15 @@ public class NetworkUtils {
     public static String RATING = "rating";
 
     public static String makeMovieQuery(String urlString) {
-        URL url = null;
         try {
-            url = new URL(urlString);
+            URL url = new URL(urlString);
             return getResponseFromHttpUrl(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "";
+        return null;
     }
 
     private static String getResponseFromHttpUrl(URL url) throws IOException {

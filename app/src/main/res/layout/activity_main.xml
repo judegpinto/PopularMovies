@@ -19,11 +19,24 @@
         android:layout_height="match_parent"
         android:id="@+id/progress"/>
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:gravity="center"
-        android:id="@+id/errorMessage"
-        android:text="Error loading movies. Check internet connection and try again."/>
+        android:id="@+id/errorMessage">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="ERROR LOADING MOVIES"
+            android:textColor="@android:color/white"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Check internet connection and try again."
+            android:textColor="@android:color/white"/>
+    </LinearLayout>
 
 </FrameLayout>

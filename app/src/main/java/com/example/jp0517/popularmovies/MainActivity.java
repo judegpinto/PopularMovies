@@ -14,9 +14,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.jp0517.popularmovies.utilities.JsonTools;
 import com.example.jp0517.popularmovies.utilities.NetworkUtils;
@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private PosterAdapter posterAdapter;
     private RecyclerView posterView;
     private ProgressBar progress;
-    private TextView errorMessage;
+    private LinearLayout errorMessage;
     private String popularUrl = "https://api.themoviedb.org/3/movie/popular?api_key=0af7c209fbb3336d2aee22d8442bbb4f";
     private String topRatedUrl = "https://api.themoviedb.org/3/movie/top_rated?api_key=0af7c209fbb3336d2aee22d8442bbb4f";
     Spinner sortOption;
@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setContentView(R.layout.activity_main);
         posterView = (RecyclerView) findViewById(R.id.rv);
         progress = (ProgressBar) findViewById(R.id.progress);
-        errorMessage = (TextView) findViewById(R.id.errorMessage);
+        errorMessage = (LinearLayout) findViewById(R.id.errorMessage);
 
         GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),width);
         posterView.setLayoutManager(layoutManager);
@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.d(getClass().getSimpleName(),uriString);
         posterAdapter = new PosterAdapter(getApplicationContext());
         posterView.setAdapter(posterAdapter);
-        
+
         showProgress();
         loadMoviesPopular();
     }
@@ -63,7 +63,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         progress.setVisibility(View.VISIBLE);
         posterView.setVisibility(View.INVISIBLE);
+        errorMessage.setVisibility(View.INVISIBLE);
     }
+
+    private void showPosters() {
+        progress.setVisibility(View.INVISIBLE);
+        posterView.setVisibility(View.VISIBLE);
+    }
+
+    private void showErrorMessage() {
+        posterView.setVisibility(View.INVISIBLE);
+        progress.setVisibility(View.INVISIBLE);
+        errorMessage.setVisibility(View.VISIBLE);
+    }
+
     public void loadMoviesPopular() {
         showProgress();
         new MovieTask().execute(popularUrl);
@@ -85,10 +98,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         @Override
         protected void onPostExecute(String unparsed) {
             super.onPostExecute(unparsed);
-            MovieInfo[] movies = JsonTools.getMovieInfo(unparsed);
-            posterAdapter.setMovieInfo(movies);
-            progress.setVisibility(View.INVISIBLE);
-            posterView.setVisibility(View.VISIBLE);
+            if(unparsed!=null) {
+                MovieInfo[] movies = JsonTools.getMovieInfo(unparsed);
+                posterAdapter.setMovieInfo(movies);
+                showPosters();
+            } else {
+                showErrorMessage();
+            }
         }
     }
 
