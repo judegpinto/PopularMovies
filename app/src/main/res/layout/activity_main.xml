@@ -14,5 +14,16 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/progress"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:id="@+id/errorMessage"
+        android:text="Error loading movies. Check internet connection and try again."/>
 
 </FrameLayout>
