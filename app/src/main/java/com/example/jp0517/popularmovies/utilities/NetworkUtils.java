@@ -16,9 +16,6 @@ import java.util.Scanner;
 
 public class NetworkUtils {
 
-    public static String POPULAR = "popular";
-    public static String RATING = "rating";
-
     public static String makeMovieQuery(String urlString) {
         try {
             URL url = new URL(urlString);

@@ -7,7 +7,7 @@
         android:id="@+id/menuSort"
         android:orderInCategory="1"
         app:showAsAction="ifRoom"
-        android:title="SORT"
+        android:title="Sort"
         android:actionLayout="@layout/action_sort"
         app:actionViewClass="android.widget.Spinner"/>
 </menu>

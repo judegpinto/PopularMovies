@@ -22,10 +22,11 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
 
     private MovieInfo[] m_movies;
     private Context m_context;
-    private final String base = "http://image.tmdb.org/t/p/w342";
+    private String base;
 
     public PosterAdapter(Context context) {
         m_context = context;
+        base = m_context.getString(R.string.image_small);
     }
 
     @Override
@@ -36,7 +37,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
 
     @Override
     public PosterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.i("adapter","creating view");
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.movie_poster,parent,false);
@@ -45,7 +45,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
 
     @Override
     public void onBindViewHolder(PosterViewHolder holder, int position) {
-        Log.d("adapter","loading image");
         String imageExt = m_movies[position].getImageExt();
         Picasso.with(m_context).load(base+imageExt).into(holder.imageView);
     }
@@ -61,7 +60,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(m_context, MovieDetailActivity.class);
-                    intent.putExtra("MOVIES",m_movies[getAdapterPosition()]);
+                    intent.putExtra(m_context.getString(R.string.EXTRA_MOVIE_INFO),m_movies[getAdapterPosition()]);
                     m_context.startActivity(intent);
                 }
             });

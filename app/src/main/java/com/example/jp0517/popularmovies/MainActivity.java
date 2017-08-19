@@ -24,13 +24,11 @@ import com.example.jp0517.popularmovies.view.PosterAdapter;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final int width = 3;
+    private static final int width = 2;
     private PosterAdapter posterAdapter;
     private RecyclerView posterView;
     private ProgressBar progress;
     private LinearLayout errorMessage;
-    private String popularUrl = "https://api.themoviedb.org/3/movie/popular?api_key=0af7c209fbb3336d2aee22d8442bbb4f";
-    private String topRatedUrl = "https://api.themoviedb.org/3/movie/top_rated?api_key=0af7c209fbb3336d2aee22d8442bbb4f";
     Spinner sortOption;
 
     @Override
@@ -45,13 +43,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         posterView.setLayoutManager(layoutManager);
         posterView.setHasFixedSize(false);
 
-        String query = getString(R.string.dicover_popular);
-        String url = getString(R.string.api_base_url) + getString(R.string.movie_key) + query;
-        //should look like: https://api.themoviedb.org/3/movie/popular?api_key=0af7c209fbb3336d2aee22d8442bbb4f
-
-        Uri uri = Uri.parse(url);
-        String uriString = uri.toString();
-        Log.d(getClass().getSimpleName(),uriString);
         posterAdapter = new PosterAdapter(getApplicationContext());
         posterView.setAdapter(posterAdapter);
 
@@ -79,15 +70,16 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void loadMoviesPopular() {
         showProgress();
+        String popularUrl = getString(R.string.api_base_url) + getString(R.string.option_popular) + getString(R.string.movie_key);
         new MovieTask().execute(popularUrl);
     }
 
     public void loadMoviesTopRated() {
         showProgress();
+        String topRatedUrl = getString(R.string.api_base_url) + getString(R.string.option_top_rated) + getString(R.string.movie_key);
         new MovieTask().execute(topRatedUrl);
     }
 
-    //TODO: Call this task so image urls are returned in string array, then process in onpostexcute
     public class MovieTask extends AsyncTask<String,Void,String> {
 
         @Override

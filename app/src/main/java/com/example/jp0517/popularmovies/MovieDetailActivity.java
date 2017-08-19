@@ -18,7 +18,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView date;
     TextView summary;
 
-    private final String base = "http://image.tmdb.org/t/p/w500";
+    private final String base = getString(R.string.image_large);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +32,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         summary = (TextView) findViewById(R.id.summary);
 
         Intent intent = getIntent();
-        MovieInfo movie = (MovieInfo) intent.getSerializableExtra("MOVIES");
+        MovieInfo movie = (MovieInfo) intent.getSerializableExtra(getString(R.string.EXTRA_MOVIE_INFO));
         title.setText(movie.getTitle());
         rating.setText(movie.getRating());
         date.setText(movie.getDate());
