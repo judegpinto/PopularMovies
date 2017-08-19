@@ -1,10 +1,7 @@
 package com.example.jp0517.popularmovies;
 
-import android.graphics.Movie;
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.io.Serializable;
+import java.text.DateFormatSymbols;
 
 /**
  * Created by jp0517 on 8/17/17.
@@ -21,8 +18,8 @@ public class MovieInfo implements Serializable {
         m_title=title;
         m_imageExt=imageExt;
         m_synopsis=synopsis;
-        m_userRating=userRating;
-        m_releaseDate=releaseDate;
+        m_userRating=parseRating(userRating);
+        m_releaseDate=parseDate(releaseDate);
     }
 
     public String getImageExt() {
@@ -45,4 +42,25 @@ public class MovieInfo implements Serializable {
         return m_releaseDate;
     }
 
+    private String parseDate(String textDate) {
+        int year = Integer.valueOf(textDate.substring(0,4));
+        int month = Integer.valueOf(textDate.substring(5,7));
+        int day = Integer.valueOf(textDate.substring(8,10));
+        String monthString = new DateFormatSymbols().getMonths()[month-1];
+        StringBuilder date = new StringBuilder();
+        date.append(monthString)
+                .append(" ")
+                .append(day)
+                .append(" ")
+                .append(year);
+        return date.toString();
+    }
+
+    private String parseRating(String textRating) {
+        StringBuilder rating = new StringBuilder()
+                .append("Rating: ")
+                .append(textRating)
+                .append("/10");
+        return rating.toString();
+    }
 }

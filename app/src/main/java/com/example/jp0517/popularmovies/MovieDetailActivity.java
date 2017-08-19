@@ -1,6 +1,7 @@
 package com.example.jp0517.popularmovies;
 
 import android.content.Intent;
+import android.support.annotation.IntDef;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -10,6 +11,14 @@ import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
+import java.text.DateFormat;
+import java.text.DateFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
 public class MovieDetailActivity extends AppCompatActivity {
 
     ImageView poster;
@@ -18,12 +27,14 @@ public class MovieDetailActivity extends AppCompatActivity {
     TextView date;
     TextView summary;
 
-    private final String base = getString(R.string.image_large);
+    private String base;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
+
+        base = getString(R.string.image_large);
 
         poster = (ImageView) findViewById(R.id.poster);
         title = (TextView) findViewById(R.id.title);

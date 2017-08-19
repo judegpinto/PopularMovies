@@ -24,7 +24,7 @@ import com.example.jp0517.popularmovies.view.PosterAdapter;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final int width = 2;
+    private static final int width = 3;
     private PosterAdapter posterAdapter;
     private RecyclerView posterView;
     private ProgressBar progress;
