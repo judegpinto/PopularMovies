@@ -4,8 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".MainActivity">
     <item
-        android:id="@+id/action_refresh"
+        android:id="@+id/menuSort"
         android:orderInCategory="1"
-        android:title="Refresh"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom"
+        android:title="SORT"
+        android:actionLayout="@layout/action_sort"
+        app:actionViewClass="android.widget.Spinner"/>
 </menu>

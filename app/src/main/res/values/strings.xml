@@ -3,4 +3,8 @@
     <string name="api_base_url">https://api.themoviedb.org/3/movie/popular</string>
     <string name="dicover_popular">/discover/movie?sort_by=popularity.desc</string>
     <string name="disover_vote_average">/discover/movie?sort_by=vote_average.desc</string>
+    <string-array name="sort_array">
+        <item>Popular</item>
+        <item>Top Rated</item>
+    </string-array>
 </resources>
