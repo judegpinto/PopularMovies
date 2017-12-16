@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/title"
-            android:textSize="@string/extra_large"
+            android:textSize="@dimen/extra_large"
             android:gravity="center"/>
         <ImageView
             android:layout_width="wrap_content"
@@ -23,19 +23,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/date"
-            android:textSize="@string/large"
+            android:textSize="@dimen/large"
             android:gravity="center"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/rating"
-            android:textSize="@string/medium"
+            android:textSize="@dimen/medium"
             android:gravity="center"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/summary"
-            android:textSize="@string/small"
+            android:textSize="@dimen/small"
             android:gravity="center"/>
     </LinearLayout>
 </ScrollView>

@@ -10,8 +10,4 @@
     <string name="EXTRA_MOVIE_INFO">MOVIE</string>
     <string name="image_large">http://image.tmdb.org/t/p/w500</string>
     <string name="image_small">http://image.tmdb.org/t/p/w342</string>
-    <string name="small">20dp</string>
-    <string name="medium">30dp</string>
-    <string name="large">40dp</string>
-    <string name="extra_large">50dp</string>
 </resources>
