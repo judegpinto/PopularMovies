@@ -1,4 +1,4 @@
-package com.example.jp0517.popularmovies;
+package com.example.jp0517.popularmovies.movie;
 
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
@@ -13,13 +13,20 @@ public class MovieInfo implements Serializable {
     private String m_synopsis;
     private String m_userRating;
     private String m_releaseDate;
+    private String m_movieId;
 
-    public MovieInfo(String title, String imageExt, String synopsis, String userRating, String releaseDate) {
+    public MovieInfo(String title,
+                     String imageExt,
+                     String synopsis,
+                     String userRating,
+                     String releaseDate,
+                     String id) {
         m_title=title;
         m_imageExt=imageExt;
         m_synopsis=synopsis;
         m_userRating=parseRating(userRating);
         m_releaseDate=parseDate(releaseDate);
+        m_movieId = id;
     }
 
     public String getImageExt() {
@@ -40,6 +47,10 @@ public class MovieInfo implements Serializable {
 
     public String getDate() {
         return m_releaseDate;
+    }
+
+    public String getMovieId() {
+        return m_movieId;
     }
 
     private String parseDate(String textDate) {

@@ -3,14 +3,13 @@ package com.example.jp0517.popularmovies.view;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.example.jp0517.popularmovies.MovieDetailActivity;
-import com.example.jp0517.popularmovies.MovieInfo;
+import com.example.jp0517.popularmovies.movie.MovieInfo;
 import com.example.jp0517.popularmovies.R;
 import com.squareup.picasso.Picasso;
 

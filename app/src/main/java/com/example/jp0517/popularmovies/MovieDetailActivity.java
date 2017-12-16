@@ -1,23 +1,18 @@
 package com.example.jp0517.popularmovies;
 
 import android.content.Intent;
-import android.support.annotation.IntDef;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.jp0517.popularmovies.movie.MovieInfo;
+import com.example.jp0517.popularmovies.movie.TrailerInfo;
+import com.example.jp0517.popularmovies.utilities.JsonTools;
+import com.example.jp0517.popularmovies.utilities.NetworkUtils;
 import com.squareup.picasso.Picasso;
-
-import org.w3c.dom.Text;
-
-import java.text.DateFormat;
-import java.text.DateFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.Locale;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -48,7 +43,36 @@ public class MovieDetailActivity extends AppCompatActivity {
         rating.setText(movie.getRating());
         date.setText(movie.getDate());
         summary.setText(movie.getSummary());
+        String movieId = movie.getMovieId();
+
+        new TrailerTask().execute(getTrailerQueryString(movieId));
 
         Picasso.with(this).load(base+movie.getImageExt()).into(poster);
+    }
+
+    public class TrailerTask extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            return NetworkUtils.makeMovieQuery(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(String unparsed) {
+            super.onPostExecute(unparsed);
+            if(unparsed!=null) {
+                Log.d(getClass().getSimpleName(),unparsed);
+                TrailerInfo[] trailers = JsonTools.getTrailerInfo(unparsed);
+            } else {
+
+            }
+        }
+    }
+
+    private String getTrailerQueryString(String id) {
+        return getString(R.string.api_base_url) +
+                        id +
+                        getString(R.string.videos_extension) +
+                        getString(R.string.movie_key);
     }
 }

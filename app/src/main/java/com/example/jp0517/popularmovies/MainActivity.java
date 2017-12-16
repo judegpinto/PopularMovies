@@ -21,6 +21,7 @@ import android.widget.Spinner;
 import com.example.jp0517.popularmovies.utilities.JsonTools;
 import com.example.jp0517.popularmovies.utilities.NetworkUtils;
 import com.example.jp0517.popularmovies.view.PosterAdapter;
+import com.example.jp0517.popularmovies.movie.MovieInfo;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
