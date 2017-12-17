@@ -34,6 +34,7 @@ public class MovieDetailActivity extends AppCompatActivity {
     private ProgressBar loadingProgress;
     private LinearLayout errorMessage;
     private ScrollView detailView;
+    private TextView length;
 
     private String base;
 
@@ -51,6 +52,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         rating = (TextView) findViewById(R.id.rating);
         date = (TextView) findViewById(R.id.date);
         summary = (TextView) findViewById(R.id.summary);
+        length = (TextView) findViewById(R.id.length);
         listView = (ListView) findViewById(R.id.trailer_list);
         trailerAdapter = new TrailerAdapter(MovieDetailActivity.this);
         listView.setAdapter(trailerAdapter);
@@ -72,20 +74,28 @@ public class MovieDetailActivity extends AppCompatActivity {
         Picasso.with(this).load(base+movie.getImageExt()).into(poster);
     }
 
-    private class TrailerTask extends AsyncTask<String,Void,String> {
+    private class TrailerTask extends AsyncTask<String,Void,String[]> {
 
         @Override
-        protected String doInBackground(String... params) {
-            return NetworkUtils.makeMovieQuery(params[0]);
+        protected String[] doInBackground(String... params) {
+            String[] results = new String[2];
+            results[0] = NetworkUtils.makeMovieQuery(params[0]);
+            results[1] = NetworkUtils.makeMovieQuery(params[1]);
+            return results;
         }
 
         @Override
-        protected void onPostExecute(String unparsed) {
+        protected void onPostExecute(String[] unparsed) {
             super.onPostExecute(unparsed);
-            if(unparsed!=null) {
-                Log.d(getClass().getSimpleName(),unparsed);
-                m_trailers = JsonTools.getTrailerInfo(unparsed);
+            if( (unparsed[0]!=null) && (unparsed[1]!=null)) {
+                Log.d(getClass().getSimpleName(),unparsed[0]);
+                m_trailers = JsonTools.getTrailerInfo(unparsed[0]);
                 trailerAdapter.setTrailerInfo(m_trailers);
+
+                Log.d(getClass().getSimpleName(),unparsed[1]);
+                String runtime = JsonTools.getDetailInfo(unparsed[1]);
+                length.setText(runtime + "mins");
+
                 showDetail();
             } else {
                 showErrorMessage();
@@ -100,9 +110,15 @@ public class MovieDetailActivity extends AppCompatActivity {
                         getString(R.string.movie_key);
     }
 
+    private String getDetailQueryString(String id) {
+        return getString(R.string.api_base_url) +
+                id +
+                getString(R.string.movie_key);
+    }
+
     private void loadDetails(String movieId) {
         showProgress();
-        new TrailerTask().execute(getTrailerQueryString(movieId));
+        new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
     }
 
     private void showProgress()

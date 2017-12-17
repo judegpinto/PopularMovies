@@ -65,5 +65,6 @@ public class TrailerAdapter extends BaseAdapter {
 
     public void setTrailerInfo(TrailerInfo[] trailers) {
         m_trailers = trailers;
+        notifyDataSetChanged();
     }
 }

@@ -22,6 +22,8 @@ public class JsonTools {
     private static final String getVideoName = "name";
     private static final String getSite = "site";
 
+    private static final String getMovieLength = "runtime";
+
     public static MovieInfo[] getMovieInfo(String unparsedJson) {
 
         try {
@@ -60,6 +62,19 @@ public class JsonTools {
                 trailers[i] = new TrailerInfo(name, key, site);
             }
             return trailers;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    //this function is only used to get runtime
+    //a wrapper class is needed for more than 1 parsed JSON item
+    public static String getDetailInfo(String unparsedMovie) {
+        try {
+            JSONObject movieData = new JSONObject(unparsedMovie);
+            String length = movieData.getString(getMovieLength);
+            return length;
         } catch (JSONException e) {
             e.printStackTrace();
         }
