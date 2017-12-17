@@ -57,19 +57,18 @@ public class MovieInfo implements Serializable {
         int year = Integer.valueOf(textDate.substring(0,4));
         int month = Integer.valueOf(textDate.substring(5,7));
         int day = Integer.valueOf(textDate.substring(8,10));
-        String monthString = new DateFormatSymbols().getMonths()[month-1];
+        String monthString = String.valueOf(month);
         StringBuilder date = new StringBuilder();
         date.append(monthString)
-                .append(" ")
+                .append("/")
                 .append(day)
-                .append(" ")
+                .append("/")
                 .append(year);
         return date.toString();
     }
 
     private String parseRating(String textRating) {
         StringBuilder rating = new StringBuilder()
-                .append("Rating: ")
                 .append(textRating)
                 .append("/10");
         return rating.toString();
