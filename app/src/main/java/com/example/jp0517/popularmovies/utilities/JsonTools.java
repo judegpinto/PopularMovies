@@ -57,7 +57,7 @@ public class JsonTools {
                 String key = movieObject.getString(getVideoKey);
                 String name = movieObject.getString(getVideoName);
                 String site = movieObject.getString(getSite);
-                trailers[i] = new TrailerInfo(key,name,site);
+                trailers[i] = new TrailerInfo(name, key, site);
             }
             return trailers;
         } catch (JSONException e) {

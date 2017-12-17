@@ -1,7 +1,10 @@
 package com.example.jp0517.popularmovies.utilities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +29,14 @@ public class NetworkUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static void launchTrailer(Context context, String base, String key) {
+        String urlString = base + key;
+        Intent videoIntent = new Intent(Intent.ACTION_VIEW,Uri.parse(urlString));
+        if(videoIntent.resolveActivity(context.getPackageManager()) != null) {
+            context.startActivity(videoIntent);
+        }
     }
 
     private static String getResponseFromHttpUrl(URL url) throws IOException {
