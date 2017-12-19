@@ -23,6 +23,11 @@
             android:screenOrientation="portrait">
 
         </activity>
+
+        <provider
+            android:authorities="com.example.jp0517.popularmovies"
+            android:name=".data.MovieProvider"
+            android:exported="false"/>
     </application>
 
 </manifest>
