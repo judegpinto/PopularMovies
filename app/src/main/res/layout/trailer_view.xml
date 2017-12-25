@@ -3,22 +3,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="2">
+    android:layout_height="wrap_content">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/ic_play_button"
         android:id="@+id/play_button"
-        android:layout_weight="0.5"
         android:padding="10dp"/>
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Offical Trailer"
+        tools:text="Offical Trailer That Is Way Too Long To Fit Properly In A TextView"
         android:id="@+id/trailer_name"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:layout_weight="1.5"
         android:textSize="@dimen/small"/>
 </LinearLayout>

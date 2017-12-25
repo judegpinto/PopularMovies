@@ -30,67 +30,71 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/detail_view"
-        tools:context="com.example.jp0517.popularmovies.MovieDetailActivity">
+        android:layout_height="wrap_content"
+        android:id="@+id/detail_view">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/title"
+            android:textSize="@dimen/large"
+            android:gravity="center"
+            android:background="@color/colorAccent"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"/>
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center">
-            <TextView
-                android:layout_width="match_parent"
+            android:orientation="horizontal">
+            <ImageView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/title"
-                android:textSize="@dimen/extra_large"
-                android:gravity="center"
-                android:background="@color/colorAccent"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"/>
+                android:id="@+id/poster"/>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/date"
+                    android:textSize="@dimen/medium"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/rating"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/small"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/length"
+                    android:textStyle="italic|bold"
+                    android:textSize="@dimen/small"
+                    android:gravity="center"/>
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/poster"/>
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/date"
-                        android:textSize="@dimen/medium"
-                        android:gravity="center"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/rating"
-                        android:textStyle="bold"
-                        android:textSize="@dimen/small"
-                        android:gravity="center"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/length"
-                        android:textStyle="italic|bold"
-                        android:textSize="@dimen/small"
-                        android:gravity="center"/>
-                </LinearLayout>
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:src="@drawable/star_outline"
+                    android:id="@+id/favorite"/>
             </LinearLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/summary"
-                android:textSize="@dimen/extra_small"
-                android:gravity="center"/>
-            <include
-                layout="@layout/layout_trailers"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
         </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/summary"
+            android:textSize="@dimen/smaller"
+            android:gravity="center"/>
+        <include
+            layout="@layout/layout_trailers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
     </ScrollView>
 </FrameLayout>

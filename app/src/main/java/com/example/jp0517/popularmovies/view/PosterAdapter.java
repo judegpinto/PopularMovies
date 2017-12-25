@@ -3,6 +3,7 @@ package com.example.jp0517.popularmovies.view;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import com.example.jp0517.popularmovies.MovieDetailActivity;
 import com.example.jp0517.popularmovies.movie.MovieInfo;
 import com.example.jp0517.popularmovies.R;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 /**
  * Created by jp0517 on 8/15/17.
@@ -44,8 +47,16 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
 
     @Override
     public void onBindViewHolder(PosterViewHolder holder, int position) {
-        String imageExt = m_movies[position].getImageExt();
-        Picasso.with(m_context).load(base+imageExt).into(holder.imageView);
+        String thumbnail = m_movies[position].getThumbnail();
+        if(thumbnail!=null) {
+            Log.d("debug", thumbnail);
+            File imgFile = new File(thumbnail);
+            Picasso.with(m_context).load(imgFile).into(holder.imageView);
+        } else {
+            String imageExt = m_movies[position].getImageExt();
+            Picasso.with(m_context).load(base+imageExt).into(holder.imageView);
+        }
+
     }
 
     public class PosterViewHolder extends RecyclerView.ViewHolder {
@@ -67,6 +78,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     }
 
     public void setMovieInfo(MovieInfo[] movies) {
+        Log.d("debug", "setting movie info");
         m_movies = movies;
         notifyDataSetChanged();
     }

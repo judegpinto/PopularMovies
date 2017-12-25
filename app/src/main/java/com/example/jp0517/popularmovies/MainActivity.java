@@ -1,5 +1,6 @@
 package com.example.jp0517.popularmovies;
 
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.view.MenuItemCompat;
@@ -18,10 +19,16 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
 
+import com.example.jp0517.popularmovies.data.MovieContract;
+import com.example.jp0517.popularmovies.data.MovieDbHelper;
+import com.example.jp0517.popularmovies.data.MovieProvider;
 import com.example.jp0517.popularmovies.utilities.JsonTools;
 import com.example.jp0517.popularmovies.utilities.NetworkUtils;
 import com.example.jp0517.popularmovies.view.PosterAdapter;
 import com.example.jp0517.popularmovies.movie.MovieInfo;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
@@ -31,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ProgressBar progress;
     private LinearLayout errorMessage;
     Spinner sortOption;
+
+    private int CASE_POPULAR = 0;
+    private int CASE_TOP_RATED = 1;
+    private int CASE_FAVORITE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +92,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         new MovieTask().execute(topRatedUrl);
     }
 
+    public void loadMoviesFavorite() {
+        showProgress();
+        Cursor moviesCursor = queryMovies();
+        List<MovieInfo> moviesList = new ArrayList<MovieInfo>();
+        if(moviesCursor.moveToFirst()) {
+            do {
+                MovieInfo movieInfo = new MovieInfo(
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME)),
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER)),
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_SYNOPSIS)),
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_RATING)),
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_DATE)),
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID)),
+                        moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_THUMBNAIL))
+                );
+                moviesList.add(movieInfo);
+            } while (moviesCursor.moveToNext());
+        }
+        MovieInfo [] movies = moviesList.toArray(new MovieInfo[moviesList.size()]);
+        posterAdapter.setMovieInfo(movies);
+        showPosters();
+    }
+
     public class MovieTask extends AsyncTask<String,Void,String> {
 
         @Override
@@ -124,11 +158,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             case 1:
                 loadMoviesTopRated();
                 break;
+            case 2:
+                loadMoviesFavorite();
+                Log.d("debug", "loading favorites");
+                break;
         }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    public Cursor queryMovies() {
+        return getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,null,null,null,null);
     }
 }

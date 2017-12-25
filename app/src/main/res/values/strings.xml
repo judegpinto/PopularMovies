@@ -8,8 +8,10 @@
     <string-array name="sort_array">
         <item>Popular</item>
         <item>Top Rated</item>
+        <item>Favorite</item>
     </string-array>
     <string name="EXTRA_MOVIE_INFO">MOVIE</string>
     <string name="image_large">http://image.tmdb.org/t/p/w500</string>
     <string name="image_small">http://image.tmdb.org/t/p/w342</string>
+    <string name="trailers_title">Trailers:</string>
 </resources>

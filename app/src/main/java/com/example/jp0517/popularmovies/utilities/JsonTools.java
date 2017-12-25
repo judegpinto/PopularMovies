@@ -39,7 +39,7 @@ public class JsonTools {
                 String userRating = movieObject.getString(getVoteAverage);
                 String date = movieObject.getString(getReleaseDate);
                 String id = movieObject.getString(getMovieId);
-                movies[i] = new MovieInfo(title,image,synopsis,userRating,date,id);
+                movies[i] = new MovieInfo(title,image,synopsis,userRating,date,id,null);
             }
             return movies;
         } catch (JSONException e) {

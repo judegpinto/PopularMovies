@@ -28,5 +28,15 @@ public class MovieContract {
 
         public static final String COLUMN_ID = "id";
 
+        public static final String COLUMN_POSTER = "poster";
+
+        public static final String COLUMN_THUMBNAIL = "thumbnail";
+
+        public static final String COLUMN_SYNOPSIS = "synopsis";
+
+        public static final String COLUMN_RATING = "rating";
+
+        public static final String COLUMN_DATE = "date";
+
     }
 }

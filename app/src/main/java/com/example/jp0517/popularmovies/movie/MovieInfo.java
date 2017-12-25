@@ -1,5 +1,7 @@
 package com.example.jp0517.popularmovies.movie;
 
+import android.util.Log;
+
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
 
@@ -14,19 +16,22 @@ public class MovieInfo implements Serializable {
     private String m_userRating;
     private String m_releaseDate;
     private String m_movieId;
+    private String m_thumbnail;
 
     public MovieInfo(String title,
                      String imageExt,
                      String synopsis,
                      String userRating,
                      String releaseDate,
-                     String id) {
+                     String id,
+                     String thumbnail) {
         m_title=title;
         m_imageExt=imageExt;
         m_synopsis=synopsis;
         m_userRating=parseRating(userRating);
-        m_releaseDate=parseDate(releaseDate);
+        m_releaseDate=releaseDate;
         m_movieId = id;
+        m_thumbnail = thumbnail;
     }
 
     public String getImageExt() {
@@ -53,24 +58,14 @@ public class MovieInfo implements Serializable {
         return m_movieId;
     }
 
-    private String parseDate(String textDate) {
-        int year = Integer.valueOf(textDate.substring(0,4));
-        int month = Integer.valueOf(textDate.substring(5,7));
-        int day = Integer.valueOf(textDate.substring(8,10));
-        String monthString = String.valueOf(month);
-        StringBuilder date = new StringBuilder();
-        date.append(monthString)
-                .append("/")
-                .append(day)
-                .append("/")
-                .append(year);
-        return date.toString();
-    }
-
     private String parseRating(String textRating) {
         StringBuilder rating = new StringBuilder()
                 .append(textRating)
                 .append("/10");
         return rating.toString();
+    }
+
+    public String getThumbnail() {
+        return m_thumbnail;
     }
 }
