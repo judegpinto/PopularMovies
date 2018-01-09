@@ -24,9 +24,4 @@ public class TrailerInfo {
         return m_key;
     }
 
-    public String getSite() { return m_site; }
-
-    private String constructYoutubeUrl() {
-        return null;
-    }
 }

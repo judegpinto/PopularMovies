@@ -95,6 +95,10 @@
             layout="@layout/layout_trailers"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
+        <include
+            layout="@layout/layout_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
     </ScrollView>
 </FrameLayout>

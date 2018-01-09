@@ -23,9 +23,11 @@ import android.widget.TextView;
 
 import com.example.jp0517.popularmovies.data.MovieContract;
 import com.example.jp0517.popularmovies.movie.MovieInfo;
+import com.example.jp0517.popularmovies.movie.ReviewInfo;
 import com.example.jp0517.popularmovies.movie.TrailerInfo;
 import com.example.jp0517.popularmovies.utilities.JsonTools;
 import com.example.jp0517.popularmovies.utilities.NetworkUtils;
+import com.example.jp0517.popularmovies.view.ReviewAdapter;
 import com.example.jp0517.popularmovies.view.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -42,19 +44,22 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView rating;
     private TextView date;
     private TextView summary;
-    private ListView listView;
-    private TrailerAdapter trailerAdapter;
     private ProgressBar loadingProgress;
     private LinearLayout errorMessage;
     private ScrollView detailView;
     private TextView length;
     private ImageView favorite;
+    private ListView trailerListView;
+    private ListView reviewListView;
     private String movieId;
 
     private String base;
     private String imageExt;
 
     TrailerInfo[] m_trailers;
+    private TrailerAdapter trailerAdapter;
+    ReviewInfo[] m_reviews;
+    private ReviewAdapter reviewAdapter;
 
     private boolean isFavorite;
 
@@ -69,10 +74,22 @@ public class MovieDetailActivity extends AppCompatActivity {
         date = (TextView) findViewById(R.id.date);
         summary = (TextView) findViewById(R.id.summary);
         length = (TextView) findViewById(R.id.length);
-        listView = (ListView) findViewById(R.id.trailer_list);
+        trailerListView = (ListView) findViewById(R.id.trailer_list);
         trailerAdapter = new TrailerAdapter(MovieDetailActivity.this);
-        listView.setAdapter(trailerAdapter);
-        listView.setOnTouchListener(new View.OnTouchListener() {
+        trailerListView.setAdapter(trailerAdapter);
+        trailerListView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of list view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        reviewAdapter = new ReviewAdapter(MovieDetailActivity.this);
+        reviewListView = (ListView) findViewById(R.id.review_list);
+        reviewListView.setAdapter(reviewAdapter);
+        reviewListView.setOnTouchListener(new View.OnTouchListener() {
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -103,7 +120,7 @@ public class MovieDetailActivity extends AppCompatActivity {
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID)),
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_THUMBNAIL))
             );
-            loadFavoriteTrailers(movieId);
+            loadFavoriteDetails(movieId);
         } else {
             loadDetails(movieId);
         }
@@ -136,18 +153,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-    private class TrailerTask extends AsyncTask<String,Void,String[]> {
+    private class DetailTask extends AsyncTask<String,Void,String[]> {
         @Override
         protected String[] doInBackground(String... params) {
-            String[] results = new String[2];
+            String[] results = new String[3];
             results[0] = NetworkUtils.makeMovieQuery(params[0]);
             results[1] = NetworkUtils.makeMovieQuery(params[1]);
+            results[2] = NetworkUtils.makeMovieQuery(params[2]);
             return results;
         }
         @Override
         protected void onPostExecute(String[] unparsed) {
             super.onPostExecute(unparsed);
-            if( (unparsed[0]!=null) && (unparsed[1]!=null)) {
+            if( (unparsed[0] != null) && (unparsed[1] != null) && (unparsed[2] != null) ) {
                 Log.d(getClass().getSimpleName(),unparsed[0]);
                 m_trailers = JsonTools.getTrailerInfo(unparsed[0]);
                 trailerAdapter.setTrailerInfo(m_trailers);
@@ -155,6 +173,10 @@ public class MovieDetailActivity extends AppCompatActivity {
                 Log.d(getClass().getSimpleName(),unparsed[1]);
                 String runtime = JsonTools.getDetailInfo(unparsed[1]);
                 length.setText(runtime + "mins");
+
+                Log.d(getClass().getSimpleName(),unparsed[2]);
+                m_reviews = JsonTools.getReviewInfo(unparsed[2]);
+                reviewAdapter.setReviewInfo(m_reviews);
 
                 showDetail();
             } else {
@@ -178,13 +200,26 @@ public class MovieDetailActivity extends AppCompatActivity {
                 getString(R.string.movie_key);
     }
 
-    private void loadDetails(String movieId) {
-        showProgress();
-        new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
+    private String getReviewQueryString(String id) {
+        return getString(R.string.api_base_url) +
+                id +
+                getString(R.string.reviews_extension) +
+                getString(R.string.movie_key);
     }
 
-    private void loadFavoriteTrailers(String movieId) {
-        new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
+    private void loadDetails(String movieId) {
+        showProgress();
+        new DetailTask().execute(
+                getTrailerQueryString(movieId),
+                getDetailQueryString(movieId),
+                getReviewQueryString(movieId));
+    }
+
+    private void loadFavoriteDetails(String movieId) {
+        new DetailTask().execute(
+                getTrailerQueryString(movieId),
+                getDetailQueryString(movieId),
+                getReviewQueryString(movieId));
     }
 
     //ui management
