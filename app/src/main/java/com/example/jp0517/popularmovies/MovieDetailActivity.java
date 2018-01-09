@@ -5,10 +5,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
 import android.graphics.Bitmap;
-import android.graphics.Movie;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -17,10 +14,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.ScrollView;
@@ -36,12 +31,9 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URL;
-import java.util.List;
+
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -94,14 +86,15 @@ public class MovieDetailActivity extends AppCompatActivity {
         detailView = (ScrollView) findViewById(R.id.detail_view);
         favorite = (ImageView) findViewById(R.id.favorite);
 
-
+        Intent intent = getIntent();
+        MovieInfo movieInfo;
+        movieInfo = (MovieInfo) intent.getSerializableExtra(getString(R.string.EXTRA_MOVIE_INFO));
+        movieId = movieInfo.getMovieId();
         isFavorite = isMovieFavorite(movieId);
-
         if(isFavorite) {
-            Log.d("debug", "loading movie poster");
-            Picasso.with(this).load(getMoviePath(movieId)).into(poster);
-            Cursor moviesCursor = queryOffline();
-            MovieInfo movieInfo = new MovieInfo(
+            showProgress();
+            Cursor moviesCursor = queryOffline(movieId);
+            movieInfo = new MovieInfo(
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_NAME)),
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_POSTER)),
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_SYNOPSIS)),
@@ -110,20 +103,26 @@ public class MovieDetailActivity extends AppCompatActivity {
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID)),
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_THUMBNAIL))
             );
+            loadFavoriteTrailers(movieId);
         } else {
-            Intent intent = getIntent();
-            MovieInfo movie = (MovieInfo) intent.getSerializableExtra(getString(R.string.EXTRA_MOVIE_INFO));
-            title.setText(movie.getTitle());
-            rating.setText(movie.getRating());
-            date.setText(movie.getDate());
-            summary.setText(movie.getSummary());
-            movieId = movie.getMovieId();
-            base = getString(R.string.image_large);
-            imageExt = movie.getImageExt();
             loadDetails(movieId);
+        }
+        title.setText(movieInfo.getTitle());
+        rating.setText(movieInfo.getRating());
+        date.setText(movieInfo.getDate());
+        summary.setText(movieInfo.getSummary());
+
+        base = getString(R.string.image_large);
+        imageExt = movieInfo.getImageExt();
+
+        if(isFavorite) {
+            String moviePath = getMoviePath(movieId);
+            File imgFile = new File(moviePath);
+            Picasso.with(this).load(imgFile).into(poster);
+            showDetail();
+        } else {
             Picasso.with(this).load(base+imageExt).into(poster);
         }
-
         initializeFavoriteImage(isFavorite);
         favorite.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,7 +137,6 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private class TrailerTask extends AsyncTask<String,Void,String[]> {
-
         @Override
         protected String[] doInBackground(String... params) {
             String[] results = new String[2];
@@ -146,7 +144,6 @@ public class MovieDetailActivity extends AppCompatActivity {
             results[1] = NetworkUtils.makeMovieQuery(params[1]);
             return results;
         }
-
         @Override
         protected void onPostExecute(String[] unparsed) {
             super.onPostExecute(unparsed);
@@ -161,7 +158,9 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                 showDetail();
             } else {
-                showErrorMessage();
+                if(!isFavorite) {
+                    showErrorMessage();
+                }
             }
         }
     }
@@ -181,6 +180,10 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private void loadDetails(String movieId) {
         showProgress();
+        new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
+    }
+
+    private void loadFavoriteTrailers(String movieId) {
         new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
     }
 
@@ -243,8 +246,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS,summary.getText().toString());
         values.put(MovieContract.MovieEntry.COLUMN_RATING,rating.getText().toString());
 
-        File file = savePosterImage(context);
-        File fileSmall = saveThumbnailImage(getString(R.string.image_small) + imageExt,context);
+        File file = savePosterImage(getString(R.string.image_large) + imageExt, context);
+        File fileSmall = saveThumbnailImage(getString(R.string.image_small) + imageExt, context);
 
         values.put(MovieContract.MovieEntry.COLUMN_POSTER,file.getAbsolutePath());
         values.put(MovieContract.MovieEntry.COLUMN_THUMBNAIL,fileSmall.getAbsolutePath());
@@ -260,15 +263,14 @@ public class MovieDetailActivity extends AppCompatActivity {
         String[] projection = new String[] {MovieContract.MovieEntry.COLUMN_ID};
         String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[] {id};
-        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+        Cursor cursor = getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(id).build(),
                 projection,
                 selection,
                 selectionArgs,
                 null);
         return ( (cursor != null) && (cursor.moveToFirst()) );
     }
-
-
 
     void initializeFavoriteImage(boolean isFavorite) {
         if(isFavorite) {
@@ -278,22 +280,12 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
-    private File savePosterImage(Context context) {
-        Bitmap bitmap = ((BitmapDrawable) poster.getDrawable()).getBitmap();
+    private File savePosterImage(String url, Context context) {
         ContextWrapper contextWrapper = new ContextWrapper(context);
         File file = contextWrapper.getDir("Pictures", MODE_PRIVATE);
         file = new File(file, title.getText().toString() + ".jpg");
-        try {
-            OutputStream stream = null;
-            stream = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100,stream);
-            stream.flush();
-            stream.close();
-            return file;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        Picasso.with(this).load(url).into(picassoImageTarget(file));
+        return file;
     }
 
     private File saveThumbnailImage(String url, Context context) {
@@ -326,7 +318,6 @@ public class MovieDetailActivity extends AppCompatActivity {
                                 e.printStackTrace();
                             }
                         }
-                        Log.i("image", "image saved to >>>" + file.getAbsolutePath());
                     }
                 }).start();
             }
@@ -345,7 +336,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         String[] projection = new String[] {MovieContract.MovieEntry.COLUMN_ID, MovieContract.MovieEntry.COLUMN_POSTER};
         String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[] {id};
-        Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
+        Cursor cursor = getContentResolver().query(
+                MovieContract.MovieEntry.CONTENT_URI.buildUpon().appendPath(id).build(),
                 projection,
                 selection,
                 selectionArgs,
@@ -358,16 +350,16 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     private Cursor queryOffline(String id) {
-        String[] projection = new String[] {MovieContract.MovieEntry.COLUMN_ID, MovieContract.MovieEntry.COLUMN_POSTER};
         String selection = MovieContract.MovieEntry.COLUMN_ID + "=?";
         String[] selectionArgs = new String[] {id};
         Cursor cursor = getContentResolver().query(MovieContract.MovieEntry.CONTENT_URI,
-                projection,
+                null,
                 selection,
                 selectionArgs,
                 null);
         if(cursor == null || !cursor.moveToFirst()) {
             return null;
         }
+        return cursor;
     }
 }

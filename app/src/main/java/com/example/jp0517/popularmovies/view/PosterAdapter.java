@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.jp0517.popularmovies.MainActivity;
 import com.example.jp0517.popularmovies.MovieDetailActivity;
 import com.example.jp0517.popularmovies.movie.MovieInfo;
 import com.example.jp0517.popularmovies.R;
@@ -56,7 +57,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
             String imageExt = m_movies[position].getImageExt();
             Picasso.with(m_context).load(base+imageExt).into(holder.imageView);
         }
-
     }
 
     public class PosterViewHolder extends RecyclerView.ViewHolder {
@@ -70,7 +70,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
                 @Override
                 public void onClick(View v) {
                     Intent intent = new Intent(m_context, MovieDetailActivity.class);
-                    intent.putExtra(m_context.getString(R.string.EXTRA_MOVIE_INFO),m_movies[getAdapterPosition()]);
+                    intent.putExtra(m_context.getString(R.string.EXTRA_MOVIE_INFO), m_movies[getAdapterPosition()]);
                     m_context.startActivity(intent);
                 }
             });

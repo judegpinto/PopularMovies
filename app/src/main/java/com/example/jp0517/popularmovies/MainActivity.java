@@ -38,10 +38,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private ProgressBar progress;
     private LinearLayout errorMessage;
     Spinner sortOption;
+    public static boolean favoritesDisplayed = false;
 
-    private int CASE_POPULAR = 0;
-    private int CASE_TOP_RATED = 1;
-    private int CASE_FAVORITE = 2;
+    private final int CASE_POPULAR = 0;
+    private final int CASE_TOP_RATED = 1;
+    private final int CASE_FAVORITE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,15 +153,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         showProgress();
         switch (position) {
-            case 0:
+            case CASE_POPULAR:
                 loadMoviesPopular();
+                favoritesDisplayed = false;
                 break;
-            case 1:
+            case CASE_TOP_RATED:
                 loadMoviesTopRated();
+                favoritesDisplayed = false;
                 break;
-            case 2:
+            case CASE_FAVORITE:
                 loadMoviesFavorite();
-                Log.d("debug", "loading favorites");
+                favoritesDisplayed = true;
                 break;
         }
     }
