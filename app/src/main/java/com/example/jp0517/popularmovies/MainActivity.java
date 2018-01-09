@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         inflater.inflate(R.menu.sort,menu);
         MenuItem item = menu.findItem(R.id.menuSort);
         sortOption = (Spinner) MenuItemCompat.getActionView(item);
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sort_array,R.layout.support_simple_spinner_dropdown_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sort_array,R.layout.spinner_item);
         sortOption.setAdapter(adapter);
         sortOption.setOnItemSelectedListener(this);
         return true;
