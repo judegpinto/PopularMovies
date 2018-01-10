@@ -5,6 +5,7 @@
     <string name="option_popular">popular</string>
     <string name="option_top_rated">top_rated</string>
     <string name="videos_extension">/videos</string>
+    <string name="reviews_extension">/reviews</string>
     <string-array name="sort_array">
         <item>Popular</item>
         <item>Top Rated</item>
@@ -15,4 +16,13 @@
     <string name="image_large">http://image.tmdb.org/t/p/w500</string>
     <string name="image_small">http://image.tmdb.org/t/p/w342</string>
     <string name="trailers_title">Trailers:</string>
+    <string name="reviews_title">Reviews:</string>
+    <string name="rating_format">%s/10</string>
+    <string name="rating_suffix">/10</string>
+    <string name="movie_length_format">%s mins</string>
+    <string name="deleting_file">Deleting File: </string>
+    <string name="return_uri_error">Empty Return URI</string>
+    <string name="poster_directory">Pictures</string>
+    <string name="thumbnail_poster_local_extension">_small</string>
+    <string name="poster_file_type">.jpg</string>
 </resources>

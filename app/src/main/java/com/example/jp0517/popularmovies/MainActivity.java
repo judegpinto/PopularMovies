@@ -1,14 +1,12 @@
 package com.example.jp0517.popularmovies;
 
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -20,8 +18,6 @@ import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import com.example.jp0517.popularmovies.data.MovieContract;
-import com.example.jp0517.popularmovies.data.MovieDbHelper;
-import com.example.jp0517.popularmovies.data.MovieProvider;
 import com.example.jp0517.popularmovies.utilities.JsonTools;
 import com.example.jp0517.popularmovies.utilities.NetworkUtils;
 import com.example.jp0517.popularmovies.view.PosterAdapter;

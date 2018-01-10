@@ -23,9 +23,11 @@ import android.widget.TextView;
 
 import com.example.jp0517.popularmovies.data.MovieContract;
 import com.example.jp0517.popularmovies.movie.MovieInfo;
+import com.example.jp0517.popularmovies.movie.ReviewInfo;
 import com.example.jp0517.popularmovies.movie.TrailerInfo;
 import com.example.jp0517.popularmovies.utilities.JsonTools;
 import com.example.jp0517.popularmovies.utilities.NetworkUtils;
+import com.example.jp0517.popularmovies.view.ReviewAdapter;
 import com.example.jp0517.popularmovies.view.TrailerAdapter;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -42,19 +44,22 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView rating;
     private TextView date;
     private TextView summary;
-    private ListView listView;
-    private TrailerAdapter trailerAdapter;
     private ProgressBar loadingProgress;
     private LinearLayout errorMessage;
     private ScrollView detailView;
     private TextView length;
     private ImageView favorite;
+    private ListView trailerListView;
+    private ListView reviewListView;
     private String movieId;
 
     private String base;
     private String imageExt;
 
     TrailerInfo[] m_trailers;
+    private TrailerAdapter trailerAdapter;
+    ReviewInfo[] m_reviews;
+    private ReviewAdapter reviewAdapter;
 
     private boolean isFavorite;
 
@@ -69,10 +74,22 @@ public class MovieDetailActivity extends AppCompatActivity {
         date = (TextView) findViewById(R.id.date);
         summary = (TextView) findViewById(R.id.summary);
         length = (TextView) findViewById(R.id.length);
-        listView = (ListView) findViewById(R.id.trailer_list);
+        trailerListView = (ListView) findViewById(R.id.trailer_list);
         trailerAdapter = new TrailerAdapter(MovieDetailActivity.this);
-        listView.setAdapter(trailerAdapter);
-        listView.setOnTouchListener(new View.OnTouchListener() {
+        trailerListView.setAdapter(trailerAdapter);
+        trailerListView.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of list view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+        reviewAdapter = new ReviewAdapter(MovieDetailActivity.this);
+        reviewListView = (ListView) findViewById(R.id.review_list);
+        reviewListView.setAdapter(reviewAdapter);
+        reviewListView.setOnTouchListener(new View.OnTouchListener() {
             // Setting on Touch Listener for handling the touch inside ScrollView
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -103,12 +120,12 @@ public class MovieDetailActivity extends AppCompatActivity {
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_ID)),
                     moviesCursor.getString(moviesCursor.getColumnIndex(MovieContract.MovieEntry.COLUMN_THUMBNAIL))
             );
-            loadFavoriteTrailers(movieId);
+            loadFavoriteDetails(movieId);
         } else {
             loadDetails(movieId);
         }
         title.setText(movieInfo.getTitle());
-        rating.setText(movieInfo.getRating());
+        rating.setText(getString(R.string.rating_format,movieInfo.getRating()));
         date.setText(movieInfo.getDate());
         summary.setText(movieInfo.getSummary());
 
@@ -136,25 +153,30 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
-    private class TrailerTask extends AsyncTask<String,Void,String[]> {
+    private class DetailTask extends AsyncTask<String,Void,String[]> {
         @Override
         protected String[] doInBackground(String... params) {
-            String[] results = new String[2];
+            String[] results = new String[3];
             results[0] = NetworkUtils.makeMovieQuery(params[0]);
             results[1] = NetworkUtils.makeMovieQuery(params[1]);
+            results[2] = NetworkUtils.makeMovieQuery(params[2]);
             return results;
         }
         @Override
         protected void onPostExecute(String[] unparsed) {
             super.onPostExecute(unparsed);
-            if( (unparsed[0]!=null) && (unparsed[1]!=null)) {
+            if( (unparsed[0] != null) && (unparsed[1] != null) && (unparsed[2] != null) ) {
                 Log.d(getClass().getSimpleName(),unparsed[0]);
                 m_trailers = JsonTools.getTrailerInfo(unparsed[0]);
                 trailerAdapter.setTrailerInfo(m_trailers);
 
                 Log.d(getClass().getSimpleName(),unparsed[1]);
                 String runtime = JsonTools.getDetailInfo(unparsed[1]);
-                length.setText(runtime + "mins");
+                length.setText(getString(R.string.movie_length_format,runtime));
+
+                Log.d(getClass().getSimpleName(),unparsed[2]);
+                m_reviews = JsonTools.getReviewInfo(unparsed[2]);
+                reviewAdapter.setReviewInfo(m_reviews);
 
                 showDetail();
             } else {
@@ -178,13 +200,26 @@ public class MovieDetailActivity extends AppCompatActivity {
                 getString(R.string.movie_key);
     }
 
-    private void loadDetails(String movieId) {
-        showProgress();
-        new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
+    private String getReviewQueryString(String id) {
+        return getString(R.string.api_base_url) +
+                id +
+                getString(R.string.reviews_extension) +
+                getString(R.string.movie_key);
     }
 
-    private void loadFavoriteTrailers(String movieId) {
-        new TrailerTask().execute(getTrailerQueryString(movieId),getDetailQueryString(movieId));
+    private void loadDetails(String movieId) {
+        showProgress();
+        new DetailTask().execute(
+                getTrailerQueryString(movieId),
+                getDetailQueryString(movieId),
+                getReviewQueryString(movieId));
+    }
+
+    private void loadFavoriteDetails(String movieId) {
+        new DetailTask().execute(
+                getTrailerQueryString(movieId),
+                getDetailQueryString(movieId),
+                getReviewQueryString(movieId));
     }
 
     //ui management
@@ -220,10 +255,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             do {
                 String path = queryMovie.getString(posterIndex);
                 boolean deleted = new File(path).delete();
-                Log.d("debug", "file deleted is " + deleted);
+                Log.d(getClass().getSimpleName(), getString(R.string.deleting_file) + deleted);
                 String pathThumbnail = queryMovie.getString(thumbnailIndex);
                 boolean deletedThumbnail = new File(pathThumbnail).delete();
-                Log.d("debug", "file deleted is " + deletedThumbnail);
+                Log.d(getClass().getSimpleName(), getString(R.string.deleting_file) + deletedThumbnail);
             } while (queryMovie.moveToNext());
         }
         queryMovie.close();
@@ -244,7 +279,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_NAME,title.getText().toString());
         values.put(MovieContract.MovieEntry.COLUMN_DATE,date.getText().toString());
         values.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS,summary.getText().toString());
-        values.put(MovieContract.MovieEntry.COLUMN_RATING,rating.getText().toString());
+        String ratingToStore = rating.getText().toString().replace(getString(R.string.rating_suffix),"");
+        values.put(MovieContract.MovieEntry.COLUMN_RATING, ratingToStore);
 
         File file = savePosterImage(getString(R.string.image_large) + imageExt, context);
         File fileSmall = saveThumbnailImage(getString(R.string.image_small) + imageExt, context);
@@ -255,7 +291,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
 
         if(uri == null) {
-            throw new RuntimeException("Empty Return URI");
+            throw new RuntimeException(getString(R.string.return_uri_error));
         }
     }
 
@@ -282,17 +318,18 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private File savePosterImage(String url, Context context) {
         ContextWrapper contextWrapper = new ContextWrapper(context);
-        File file = contextWrapper.getDir("Pictures", MODE_PRIVATE);
-        file = new File(file, title.getText().toString() + ".jpg");
+        File file = contextWrapper.getDir(getString(R.string.poster_directory), MODE_PRIVATE);
+        file = new File(file, title.getText().toString() + getString(R.string.poster_file_type));
         Picasso.with(this).load(url).into(picassoImageTarget(file));
         return file;
     }
 
     private File saveThumbnailImage(String url, Context context) {
-        Log.d("picassoImageTarget", " picassoImageTarget");
         ContextWrapper contextWrapper = new ContextWrapper(context);
-        File file = contextWrapper.getDir("Pictures", MODE_PRIVATE);
-        file = new File(file, title.getText().toString() + "_small" + ".jpg");
+        File file = contextWrapper.getDir(getString(R.string.poster_directory), MODE_PRIVATE);
+        file = new File(file, title.getText().toString() +
+                getString(R.string.thumbnail_poster_local_extension) +
+                getString(R.string.poster_file_type));
         Picasso.with(this).load(url).into(picassoImageTarget(file));
         return file;
     }
@@ -308,7 +345,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                         FileOutputStream fos = null;
                         try {
                             fos = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                            int quality = 100;
+                            bitmap.compress(Bitmap.CompressFormat.PNG, quality, fos);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } finally {

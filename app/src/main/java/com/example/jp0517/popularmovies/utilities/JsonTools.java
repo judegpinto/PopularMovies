@@ -1,6 +1,7 @@
 package com.example.jp0517.popularmovies.utilities;
 
 import com.example.jp0517.popularmovies.movie.MovieInfo;
+import com.example.jp0517.popularmovies.movie.ReviewInfo;
 import com.example.jp0517.popularmovies.movie.TrailerInfo;
 
 import org.json.*;
@@ -23,6 +24,9 @@ public class JsonTools {
     private static final String getSite = "site";
 
     private static final String getMovieLength = "runtime";
+
+    private static final String getAuthor = "author";
+    private static final String getContent = "content";
 
     public static MovieInfo[] getMovieInfo(String unparsedJson) {
 
@@ -62,6 +66,25 @@ public class JsonTools {
                 trailers[i] = new TrailerInfo(name, key, site);
             }
             return trailers;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static ReviewInfo[] getReviewInfo(String unparsedReviewInfo) {
+        try {
+            JSONObject reviewData = new JSONObject(unparsedReviewInfo);
+            String jsonArrayUnparsed = reviewData.getString(getResults);
+            JSONArray reviewArray = new JSONArray(jsonArrayUnparsed);
+            ReviewInfo[] reviews = new ReviewInfo[reviewArray.length()];
+            for(int i = 0; i < reviewArray.length(); i++) {
+                JSONObject reviewObject = reviewArray.getJSONObject(i);
+                String author = reviewObject.getString(getAuthor);
+                String content = reviewObject.getString(getContent);
+                reviews[i] = new ReviewInfo(author, content);
+            }
+            return reviews;
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -2,8 +2,6 @@ package com.example.jp0517.popularmovies.utilities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 
 import java.io.IOException;

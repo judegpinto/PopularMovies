@@ -1,9 +1,6 @@
 package com.example.jp0517.popularmovies.movie;
 
-import android.util.Log;
-
 import java.io.Serializable;
-import java.text.DateFormatSymbols;
 
 /**
  * Created by jp0517 on 8/17/17.
@@ -28,7 +25,7 @@ public class MovieInfo implements Serializable {
         m_title=title;
         m_imageExt=imageExt;
         m_synopsis=synopsis;
-        m_userRating=parseRating(userRating);
+        m_userRating=userRating;
         m_releaseDate=releaseDate;
         m_movieId = id;
         m_thumbnail = thumbnail;
@@ -56,13 +53,6 @@ public class MovieInfo implements Serializable {
 
     public String getMovieId() {
         return m_movieId;
-    }
-
-    private String parseRating(String textRating) {
-        StringBuilder rating = new StringBuilder()
-                .append(textRating)
-                .append("/10");
-        return rating.toString();
     }
 
     public String getThumbnail() {
