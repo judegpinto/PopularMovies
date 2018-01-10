@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.example.jp0517.popularmovies.MainActivity;
 import com.example.jp0517.popularmovies.MovieDetailActivity;
 import com.example.jp0517.popularmovies.movie.MovieInfo;
 import com.example.jp0517.popularmovies.R;

@@ -1,12 +1,6 @@
 package com.example.jp0517.popularmovies.movie;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.example.jp0517.popularmovies.R;
-
 import java.io.Serializable;
-import java.text.DateFormatSymbols;
 
 /**
  * Created by jp0517 on 8/17/17.

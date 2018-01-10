@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jp0517.popularmovies.R;
 import com.example.jp0517.popularmovies.movie.TrailerInfo;

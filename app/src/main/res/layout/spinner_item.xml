@@ -4,5 +4,5 @@
     android:layout_height="wrap_content"
     android:id="@+id/spinner_item"
     android:textColor="@android:color/white"
-    android:textSize="@dimen/small"
-    android:padding="5dp"/>
+    android:textSize="@dimen/smaller"
+    android:padding="10dp"/>
