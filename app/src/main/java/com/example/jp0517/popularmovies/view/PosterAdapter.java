@@ -50,7 +50,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     public void onBindViewHolder(PosterViewHolder holder, int position) {
         String thumbnail = m_movies[position].getThumbnail();
         if(thumbnail!=null) {
-            Log.d("debug", thumbnail);
+            Log.d(getClass().getSimpleName(), thumbnail);
             File imgFile = new File(thumbnail);
             Picasso.with(m_context).load(imgFile).into(holder.imageView);
         } else {
@@ -78,7 +78,6 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     }
 
     public void setMovieInfo(MovieInfo[] movies) {
-        Log.d("debug", "setting movie info");
         m_movies = movies;
         notifyDataSetChanged();
     }

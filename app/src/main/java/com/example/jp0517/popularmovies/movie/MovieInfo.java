@@ -13,7 +13,6 @@ import java.text.DateFormatSymbols;
  */
 
 public class MovieInfo implements Serializable {
-    public final String RATING_SUFFIX = "/10";
     private String m_title;
     private String m_imageExt;
     private String m_synopsis;

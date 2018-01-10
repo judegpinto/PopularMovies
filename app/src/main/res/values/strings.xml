@@ -19,4 +19,10 @@
     <string name="reviews_title">Reviews:</string>
     <string name="rating_format">%s/10</string>
     <string name="rating_suffix">/10</string>
+    <string name="movie_length_format">%s mins</string>
+    <string name="deleting_file">Deleting File: </string>
+    <string name="return_uri_error">Empty Return URI</string>
+    <string name="poster_directory">Pictures</string>
+    <string name="thumbnail_poster_local_extension">_small</string>
+    <string name="poster_file_type">.jpg</string>
 </resources>

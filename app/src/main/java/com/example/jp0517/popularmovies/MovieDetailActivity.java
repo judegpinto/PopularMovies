@@ -172,7 +172,7 @@ public class MovieDetailActivity extends AppCompatActivity {
 
                 Log.d(getClass().getSimpleName(),unparsed[1]);
                 String runtime = JsonTools.getDetailInfo(unparsed[1]);
-                length.setText(runtime + "mins");
+                length.setText(getString(R.string.movie_length_format,runtime));
 
                 Log.d(getClass().getSimpleName(),unparsed[2]);
                 m_reviews = JsonTools.getReviewInfo(unparsed[2]);
@@ -255,10 +255,10 @@ public class MovieDetailActivity extends AppCompatActivity {
             do {
                 String path = queryMovie.getString(posterIndex);
                 boolean deleted = new File(path).delete();
-                Log.d("debug", "file deleted is " + deleted);
+                Log.d(getClass().getSimpleName(), getString(R.string.deleting_file) + deleted);
                 String pathThumbnail = queryMovie.getString(thumbnailIndex);
                 boolean deletedThumbnail = new File(pathThumbnail).delete();
-                Log.d("debug", "file deleted is " + deletedThumbnail);
+                Log.d(getClass().getSimpleName(), getString(R.string.deleting_file) + deletedThumbnail);
             } while (queryMovie.moveToNext());
         }
         queryMovie.close();
@@ -291,7 +291,7 @@ public class MovieDetailActivity extends AppCompatActivity {
         Uri uri = getContentResolver().insert(MovieContract.MovieEntry.CONTENT_URI, values);
 
         if(uri == null) {
-            throw new RuntimeException("Empty Return URI");
+            throw new RuntimeException(getString(R.string.return_uri_error));
         }
     }
 
@@ -318,17 +318,18 @@ public class MovieDetailActivity extends AppCompatActivity {
 
     private File savePosterImage(String url, Context context) {
         ContextWrapper contextWrapper = new ContextWrapper(context);
-        File file = contextWrapper.getDir("Pictures", MODE_PRIVATE);
-        file = new File(file, title.getText().toString() + ".jpg");
+        File file = contextWrapper.getDir(getString(R.string.poster_directory), MODE_PRIVATE);
+        file = new File(file, title.getText().toString() + getString(R.string.poster_file_type));
         Picasso.with(this).load(url).into(picassoImageTarget(file));
         return file;
     }
 
     private File saveThumbnailImage(String url, Context context) {
-        Log.d("picassoImageTarget", " picassoImageTarget");
         ContextWrapper contextWrapper = new ContextWrapper(context);
-        File file = contextWrapper.getDir("Pictures", MODE_PRIVATE);
-        file = new File(file, title.getText().toString() + "_small" + ".jpg");
+        File file = contextWrapper.getDir(getString(R.string.poster_directory), MODE_PRIVATE);
+        file = new File(file, title.getText().toString() +
+                getString(R.string.thumbnail_poster_local_extension) +
+                getString(R.string.poster_file_type));
         Picasso.with(this).load(url).into(picassoImageTarget(file));
         return file;
     }
@@ -344,7 +345,8 @@ public class MovieDetailActivity extends AppCompatActivity {
                         FileOutputStream fos = null;
                         try {
                             fos = new FileOutputStream(file);
-                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+                            int quality = 100;
+                            bitmap.compress(Bitmap.CompressFormat.PNG, quality, fos);
                         } catch (IOException e) {
                             e.printStackTrace();
                         } finally {
