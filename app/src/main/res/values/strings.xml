@@ -17,4 +17,6 @@
     <string name="image_small">http://image.tmdb.org/t/p/w342</string>
     <string name="trailers_title">Trailers:</string>
     <string name="reviews_title">Reviews:</string>
+    <string name="rating_format">%s/10</string>
+    <string name="rating_suffix">/10</string>
 </resources>

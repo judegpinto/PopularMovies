@@ -125,7 +125,7 @@ public class MovieDetailActivity extends AppCompatActivity {
             loadDetails(movieId);
         }
         title.setText(movieInfo.getTitle());
-        rating.setText(movieInfo.getRating());
+        rating.setText(getString(R.string.rating_format,movieInfo.getRating()));
         date.setText(movieInfo.getDate());
         summary.setText(movieInfo.getSummary());
 
@@ -279,7 +279,8 @@ public class MovieDetailActivity extends AppCompatActivity {
         values.put(MovieContract.MovieEntry.COLUMN_NAME,title.getText().toString());
         values.put(MovieContract.MovieEntry.COLUMN_DATE,date.getText().toString());
         values.put(MovieContract.MovieEntry.COLUMN_SYNOPSIS,summary.getText().toString());
-        values.put(MovieContract.MovieEntry.COLUMN_RATING,rating.getText().toString());
+        String ratingToStore = rating.getText().toString().replace(getString(R.string.rating_suffix),"");
+        values.put(MovieContract.MovieEntry.COLUMN_RATING, ratingToStore);
 
         File file = savePosterImage(getString(R.string.image_large) + imageExt, context);
         File fileSmall = saveThumbnailImage(getString(R.string.image_small) + imageExt, context);
