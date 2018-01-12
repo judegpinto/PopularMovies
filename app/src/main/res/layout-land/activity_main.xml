@@ -7,13 +7,12 @@
     android:background="@android:color/black"
     tools:context="com.example.jp0517.popularmovies.MainActivity">
 
-
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/rv"
-        android:orientation="vertical"
-        app:spanCount="3">
+        android:orientation="horizontal"
+        app:spanCount="2">
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar

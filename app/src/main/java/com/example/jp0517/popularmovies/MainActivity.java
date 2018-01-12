@@ -1,5 +1,6 @@
 package com.example.jp0517.popularmovies;
 
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.support.v4.view.MenuItemCompat;
@@ -28,7 +29,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private static final int width = 3;
+    private static final int portrait_width = 3;
+    private static final int landscape_width = 5;
     private PosterAdapter posterAdapter;
     private RecyclerView posterView;
     private ProgressBar progress;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         progress = (ProgressBar) findViewById(R.id.progress);
         errorMessage = (LinearLayout) findViewById(R.id.errorMessage);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),width);
+        GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),portrait_width);
         posterView.setLayoutManager(layoutManager);
         posterView.setHasFixedSize(false);
 
@@ -59,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         showProgress();
         if (savedInstanceState != null) {
-            String spinnerSelection = savedInstanceState.getString(getString(R.string.spinner_state),String.valueOf(CASE_POPULAR));
-            int spinnerValue = Integer.valueOf(spinnerSelection);
+            int spinnerValue = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
             //sortOption.setSelection(spinnerValue);
         }
     }
@@ -81,6 +82,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onRestoreInstanceState(savedInstanceState);
         int spinnerValue = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
 //        sortOption.setSelection(spinnerValue);
+        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            posterView.setLayoutManager(new GridLayoutManager(getApplicationContext(),portrait_width));
+        } else {
+            posterView.setLayoutManager(new GridLayoutManager(getApplicationContext(),landscape_width));
+        }
     }
 
     private void showProgress()
