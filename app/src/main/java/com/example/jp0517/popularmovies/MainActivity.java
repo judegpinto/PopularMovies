@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private final int CASE_TOP_RATED = 1;
     private final int CASE_FAVORITE = 2;
 
+    private int saveSpinnerState;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,7 +58,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         posterView.setAdapter(posterAdapter);
 
         showProgress();
-        loadMoviesPopular();
+        if (savedInstanceState != null) {
+            String spinnerSelection = savedInstanceState.getString(getString(R.string.spinner_state),String.valueOf(CASE_POPULAR));
+            int spinnerValue = Integer.valueOf(spinnerSelection);
+            //sortOption.setSelection(spinnerValue);
+        }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(getString(R.string.active_activity), getClass().getSimpleName());
+        if(sortOption != null) {
+            int spinnerValue = sortOption.getSelectedItemPosition();
+            outState.putInt(getString(R.string.spinner_state), spinnerValue);
+        }
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        int spinnerValue = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
+//        sortOption.setSelection(spinnerValue);
     }
 
     private void showProgress()

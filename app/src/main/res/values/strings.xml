@@ -25,4 +25,7 @@
     <string name="poster_directory">Pictures</string>
     <string name="thumbnail_poster_local_extension">_small</string>
     <string name="poster_file_type">.jpg</string>
+    <string name="active_activity">ACTIVE_ACTIVITY</string>
+    <string name="spinner_state">SPINNER_STATE</string>
+    <string name="active_movie_display">MOVIE_BEING_DISPLAYED</string>
 </resources>

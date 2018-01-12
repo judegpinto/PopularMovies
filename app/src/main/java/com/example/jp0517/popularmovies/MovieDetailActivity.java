@@ -153,6 +153,19 @@ public class MovieDetailActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putString(getString(R.string.active_activity), getClass().getSimpleName());
+        outState.putString(getString(R.string.active_movie_display),movieId);
+
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
     private class DetailTask extends AsyncTask<String,Void,String[]> {
         @Override
         protected String[] doInBackground(String... params) {

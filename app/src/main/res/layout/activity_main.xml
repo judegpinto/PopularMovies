@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@android:color/black"
     tools:context="com.example.jp0517.popularmovies.MainActivity">
 
@@ -10,7 +11,8 @@
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rv">
+        android:id="@+id/rv"
+        app:spanCount="3">
     </android.support.v7.widget.RecyclerView>
 
     <ProgressBar
