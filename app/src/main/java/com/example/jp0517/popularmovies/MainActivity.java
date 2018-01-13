@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private final int CASE_TOP_RATED = 1;
     private final int CASE_FAVORITE = 2;
 
-    private int saveSpinnerState;
+    private int saveSpinnerState = CASE_POPULAR;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +61,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         showProgress();
         if (savedInstanceState != null) {
-            int spinnerValue = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
-            //sortOption.setSelection(spinnerValue);
+            saveSpinnerState = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
         }
     }
 
@@ -80,8 +79,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        int spinnerValue = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
-//        sortOption.setSelection(spinnerValue);
+        saveSpinnerState = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             posterView.setLayoutManager(new GridLayoutManager(getApplicationContext(),portrait_width));
         } else {
@@ -172,6 +170,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,R.array.sort_array,R.layout.spinner_item);
         sortOption.setAdapter(adapter);
         sortOption.setOnItemSelectedListener(this);
+        if(saveSpinnerState != CASE_POPULAR) {
+            sortOption.setSelection(saveSpinnerState);
+        }
         return true;
     }
 
