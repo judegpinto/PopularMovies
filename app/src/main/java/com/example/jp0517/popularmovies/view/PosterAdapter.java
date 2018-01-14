@@ -51,10 +51,14 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         if(thumbnail!=null) {
             Log.d(getClass().getSimpleName(), thumbnail);
             File imgFile = new File(thumbnail);
-            Picasso.with(m_context).load(imgFile).into(holder.imageView);
+            Picasso.with(m_context).load(imgFile)
+                    .placeholder(R.drawable.android_icon)
+                    .into(holder.imageView);
         } else {
             String imageExt = m_movies[position].getImageExt();
-            Picasso.with(m_context).load(base+imageExt).into(holder.imageView);
+            Picasso.with(m_context).load(base+imageExt)
+                    .placeholder(R.drawable.android_icon)
+                    .into(holder.imageView);
         }
     }
 

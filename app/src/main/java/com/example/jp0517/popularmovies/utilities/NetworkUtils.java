@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Scanner;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by jp0517 on 8/13/17.
@@ -39,6 +40,8 @@ public class NetworkUtils {
 
     private static String getResponseFromHttpUrl(URL url) throws IOException {
         HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        int millisecondsTimeout = 5000;
+        urlConnection.setConnectTimeout(millisecondsTimeout);
         try {
             InputStream in = urlConnection.getInputStream();
 
