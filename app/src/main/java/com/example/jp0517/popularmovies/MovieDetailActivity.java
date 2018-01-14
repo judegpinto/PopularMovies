@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -50,7 +51,9 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView length;
     private ImageView favorite;
     private ListView trailerListView;
+    private Parcelable trailerListViewState;
     private ListView reviewListView;
+    private Parcelable reviewListViewState;
     private String movieId;
 
     private String base;
@@ -154,16 +157,25 @@ public class MovieDetailActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
     protected void onSaveInstanceState(Bundle outState) {
         outState.putString(getString(R.string.active_activity), getClass().getSimpleName());
         outState.putString(getString(R.string.active_movie_display),movieId);
 
+        outState.putParcelable(getString(R.string.trailer_list_view_state), trailerListView.onSaveInstanceState());
+        outState.putParcelable(getString(R.string.review_list_view_state), reviewListView.onSaveInstanceState());
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
+        trailerListViewState = savedInstanceState.getParcelable(getString(R.string.trailer_list_view_state));
+        reviewListViewState = savedInstanceState.getParcelable(getString(R.string.review_list_view_state));
     }
 
     private class DetailTask extends AsyncTask<String,Void,String[]> {
@@ -192,6 +204,14 @@ public class MovieDetailActivity extends AppCompatActivity {
                 reviewAdapter.setReviewInfo(m_reviews);
 
                 showDetail();
+
+                if(trailerListViewState != null) {
+                    trailerListView.onRestoreInstanceState(trailerListViewState);
+                }
+
+                if(reviewListViewState != null) {
+                    reviewListView.onRestoreInstanceState(reviewListViewState);
+                }
             } else {
                 if(!isFavorite) {
                     showErrorMessage();

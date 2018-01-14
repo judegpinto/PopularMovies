@@ -28,4 +28,7 @@
     <string name="active_activity">ACTIVE_ACTIVITY</string>
     <string name="spinner_state">SPINNER_STATE</string>
     <string name="active_movie_display">MOVIE_BEING_DISPLAYED</string>
+    <string name="layout_manager_state">LAYOUT_MANAGER</string>
+    <string name="trailer_list_view_state">TRAILER_LISTVIEW</string>
+    <string name="review_list_view_state">REVIEW_LISTVIEW</string>
 </resources>

@@ -3,11 +3,13 @@ package com.example.jp0517.popularmovies;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,19 +32,19 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private static final int portrait_width = 3;
-    private static final int landscape_width = 5;
+    private static final int landscape_width = 4;
     private PosterAdapter posterAdapter;
     private RecyclerView posterView;
     private ProgressBar progress;
     private LinearLayout errorMessage;
     Spinner sortOption;
-    public static boolean favoritesDisplayed = false;
 
     private final int CASE_POPULAR = 0;
     private final int CASE_TOP_RATED = 1;
     private final int CASE_FAVORITE = 2;
 
     private int saveSpinnerState = CASE_POPULAR;
+    private Parcelable mLayoutManagerState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,16 +54,23 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         progress = (ProgressBar) findViewById(R.id.progress);
         errorMessage = (LinearLayout) findViewById(R.id.errorMessage);
 
-        GridLayoutManager layoutManager = new GridLayoutManager(getApplicationContext(),portrait_width);
-        posterView.setLayoutManager(layoutManager);
+        posterView.setLayoutManager(new StaggeredGridLayoutManager(portrait_width,StaggeredGridLayoutManager.VERTICAL));
         posterView.setHasFixedSize(false);
 
         posterAdapter = new PosterAdapter(getApplicationContext());
         posterView.setAdapter(posterAdapter);
 
         showProgress();
-        if (savedInstanceState != null) {
-            saveSpinnerState = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if(sortOption != null) {
+            if(sortOption.getSelectedItemPosition() == CASE_FAVORITE) {
+                loadMoviesFavorite();
+            }
         }
     }
 
@@ -73,6 +82,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             outState.putInt(getString(R.string.spinner_state), spinnerValue);
         }
 
+        mLayoutManagerState = posterView.getLayoutManager().onSaveInstanceState();
+        outState.putParcelable(getString(R.string.layout_manager_state), mLayoutManagerState);
+
         super.onSaveInstanceState(outState);
     }
 
@@ -80,10 +92,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         saveSpinnerState = savedInstanceState.getInt(getString(R.string.spinner_state),CASE_POPULAR);
+        mLayoutManagerState = savedInstanceState.getParcelable(getString(R.string.layout_manager_state));
         if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            posterView.setLayoutManager(new GridLayoutManager(getApplicationContext(),portrait_width));
+            posterView.setLayoutManager(new StaggeredGridLayoutManager(portrait_width,StaggeredGridLayoutManager.VERTICAL));
         } else {
-            posterView.setLayoutManager(new GridLayoutManager(getApplicationContext(),landscape_width));
+            posterView.setLayoutManager(new StaggeredGridLayoutManager(landscape_width,StaggeredGridLayoutManager.VERTICAL));
         }
     }
 
@@ -154,6 +167,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 MovieInfo[] movies = JsonTools.getMovieInfo(unparsed);
                 posterAdapter.setMovieInfo(movies);
                 showPosters();
+                if(mLayoutManagerState != null) {
+                    posterView.getLayoutManager().onRestoreInstanceState(mLayoutManagerState);
+                }
             } else {
                 showErrorMessage();
             }
@@ -182,15 +198,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         switch (position) {
             case CASE_POPULAR:
                 loadMoviesPopular();
-                favoritesDisplayed = false;
                 break;
             case CASE_TOP_RATED:
                 loadMoviesTopRated();
-                favoritesDisplayed = false;
                 break;
             case CASE_FAVORITE:
                 loadMoviesFavorite();
-                favoritesDisplayed = true;
                 break;
         }
     }
